@@ -33,6 +33,28 @@ table.mt td{padding:9px 10px;border-bottom:1px solid #f0f0f2;}
 .bd{display:inline-block;border-radius:7px;padding:2px 9px;font-size:12px;font-weight:600;white-space:nowrap;}
 .bd.ok{background:#e8f8ee;color:#1a7f3c;} .bd.warn{background:#fff3e0;color:#a85d00;}
 .conf{background:#fff8e6;border:1px solid #ffe1a6;border-radius:14px;padding:14px 18px;font-size:13.5px;color:#7a5a00;margin:16px 0 0;line-height:1.7;}
+.formula{background:#0f1420;color:#e6e9ef;border-radius:14px;padding:16px 20px;margin:12px 0;font-size:18px;text-align:center;font-family:"SF Mono","Cascadia Code","Consolas",monospace;overflow-x:auto;}
+.frac{display:inline-block;vertical-align:middle;text-align:center;margin:0 4px;}
+.frac .nu{display:block;padding:0 8px 3px;border-bottom:1.5px solid #8a93a6;}
+.frac .de{display:block;padding:3px 8px 0;}
+.legend{font-size:13.5px;color:#444;line-height:1.9;margin:8px 0 0;}
+.legend code{background:#f0f0f2;border-radius:5px;padding:1px 6px;font-size:13px;}
+details.rb{border:1px solid #e8e8ec;border-radius:14px;margin:10px 0;overflow:hidden;background:#fff;}
+details.rb>summary{cursor:pointer;padding:14px 18px;font-weight:600;font-size:15px;list-style:none;background:#f9f9fb;}
+details.rb>summary::-webkit-details-marker{display:none;}
+details.rb>summary::before{content:"＋ ";color:#0071e3;font-weight:700;}
+details.rb[open]>summary::before{content:"－ ";}
+details.rb .rbody{padding:6px 18px 16px;font-size:14px;line-height:1.8;color:#333;}
+details.rb .rbody table{width:100%;border-collapse:collapse;font-size:13.5px;margin:6px 0;}
+details.rb .rbody td{padding:6px 8px;border-bottom:1px solid #f0f0f2;vertical-align:top;}
+details.rb .rbody td:first-child{white-space:nowrap;font-weight:600;color:#1F3864;width:1%;}
+.zn{display:inline-block;border-radius:7px;padding:2px 8px;font-size:12px;font-weight:700;white-space:nowrap;}
+.znA{background:#e8f8ee;color:#1a7f3c;} .znB{background:#eef1f6;color:#5a6473;} .znC{background:#fdeceb;color:#b3261e;}
+.zone-cards{display:flex;gap:14px;flex-wrap:wrap;margin:6px 0 10px;}
+.zcard{flex:1;min-width:200px;border-radius:16px;padding:18px 18px;background:#f5f5f7;}
+.zcard .zt{font-size:18px;font-weight:700;margin-bottom:4px;} .zcard .zn-n{font-size:30px;font-weight:700;}
+.zcard .zd{font-size:13px;color:#6e6e73;margin-top:6px;line-height:1.6;}
+.zcard.A{background:#eafaf0;} .zcard.B{background:#eef1f6;} .zcard.C{background:#fdeeec;}
 @media(max-width:760px){
   .hero{padding:42px 18px 28px;} .hero h1{font-size:28px;} .hero .sub{font-size:16px;}
   .wrap{padding:6px 14px 60px;} .panel{padding:22px 18px 24px;border-radius:16px;} .panel h2{font-size:22px;}
@@ -94,6 +116,135 @@ table.mt td{padding:9px 10px;border-bottom:1px solid #f0f0f2;}
     </div>
   </section>
 
+  
+  <section class="panel">
+    <h2>計算方式與公式</h2>
+    <p class="note">三個核心指標:類別欄位用 <b>Cohen's Kappa</b>、序位欄位(課程節奏)用 <b>加權 Kappa</b>、
+      數值欄位用 <b>ICC(2,1)</b>;另以 <b>實際一致率</b> 對照判讀。以下為定義與公式。</p>
+
+    <h3>① Cohen's Kappa（類別一致性）</h3>
+    <p class="legend">衡量兩位評分者的一致性,並<b>扣除「純靠運氣猜中」的部分</b>。範圍 −1~1,越高越一致。</p>
+    <div class="formula">κ = <span class="frac"><span class="nu">p<sub>o</sub> − p<sub>e</sub></span><span class="de">1 − p<sub>e</sub></span></span></div>
+    <p class="legend">
+      <code>p<sub>o</sub></code> = 觀察一致比例 = 兩方標註相同的格數 ÷ 總數(即對角線比例)。<br>
+      <code>p<sub>e</sub></code> = 隨機期望一致 = Σ<sub>i</sub> (該類在 AI 的邊際比例 × 在同學的邊際比例)。<br>
+      直覺:若某類別本來就佔絕大多數,光靠亂猜也會常常「猜中」,Kappa 會把這部分扣掉。
+    </p>
+
+    <h3>② 加權 Kappa（課程節奏 — 序位三級）</h3>
+    <p class="legend">課程節奏是<b>有順序</b>的三級:精煉流暢 → 需開倍速 → 拖泥帶水。
+      相鄰一級(如 流暢↔需開倍速)只算「輕微不同」,差兩級(流暢↔拖泥帶水)才算「嚴重不同」,故用加權。</p>
+    <div class="formula">κ<sub>w</sub> = 1 − <span class="frac"><span class="nu">Σ w<sub>ij</sub> · O<sub>ij</sub></span><span class="de">Σ w<sub>ij</sub> · E<sub>ij</sub></span></span></div>
+    <p class="legend">
+      <code>w<sub>ij</sub></code> = |序位<sub>i</sub> − 序位<sub>j</sub>| ÷ 最大級距(節奏為 2);相同 w=0、相鄰 w=0.5、差兩級 w=1。<br>
+      <code>O<sub>ij</sub></code> = 實際落在 (i,j) 的比例;<code>E<sub>ij</sub></code> = 隨機期望比例(兩邊邊際相乘)。
+    </p>
+
+    <h3>③ ICC(2,1)（數值一致性 — 趣味度／推薦度）</h3>
+    <p class="legend">組內相關係數,<b>雙向隨機、單一評分者、絕對一致</b>版本。衡量 1~5 分的數值評分一致性,範圍 0~1。</p>
+    <div class="formula">ICC = <span class="frac"><span class="nu">MS<sub>R</sub> − MS<sub>E</sub></span><span class="de">MS<sub>R</sub> + (k−1)MS<sub>E</sub> + (k∕n)(MS<sub>C</sub> − MS<sub>E</sub>)</span></span></div>
+    <p class="legend">
+      <code>n</code> = 課程數、<code>k</code> = 評分者數(AI＋同學各輪)。<br>
+      <code>MS<sub>R</sub></code> = 課程間均方(受測者變異)、<code>MS<sub>C</sub></code> = 評分者間均方(系統性高低差)、<code>MS<sub>E</sub></code> = 殘差均方。<br>
+      重點:這是「<b>絕對一致</b>」——若 AI 給分系統性地比同學高/低(即使排序一樣),ICC 仍會下降。
+    </p>
+
+    <h3>④ 實際一致率（直觀對照)</h3>
+    <p class="legend">不扣運氣的「直接吻合比例」,跟 Kappa/ICC 並列看,避免被偏態壓低的 Kappa 誤導。</p>
+    <table class="mt">
+      <thead><tr><th>欄位類型</th><th>一致率定義</th></tr></thead>
+      <tbody>
+        <tr><td>類別(能力標籤/難易度/修課對象)</td><td>逐課<b>完全相同</b>的比率</td></tr>
+        <tr><td>序位(課程節奏)</td><td>序位差 ≤ 1(相鄰即算可接受)的比率</td></tr>
+        <tr><td>數值(趣味度/推薦度)</td><td>|AI − 同學均值| ≤ 1 的課比率</td></tr>
+      </tbody>
+    </table>
+
+    <h3>各欄位用哪種方法?</h3>
+    <table class="mt">
+      <thead><tr><th>欄位</th><th>型態</th><th>指標</th><th>送人工裁決的條件</th></tr></thead>
+      <tbody>
+        <tr><td>能力標籤 A/B/C/D</td><td>二元類別(逐標籤)</td><td>Cohen's Kappa</td><td>AI 與同學標籤<b>集合對稱差 ≥ 2</b>(課程層級)</td></tr>
+        <tr><td>難易度(基礎/進階)</td><td>二元類別</td><td>Cohen's Kappa</td><td>AI 與同學共識不同</td></tr>
+        <tr><td>修課對象 通識/跨域/技術</td><td>二元類別(逐項)</td><td>Cohen's Kappa</td><td>僅列差異(不硬性送人工)</td></tr>
+        <tr><td>課程節奏</td><td>序位三級</td><td>加權 Kappa</td><td>序位差 ≥ 2(流暢↔拖泥帶水)</td></tr>
+        <tr><td>趣味度 / 推薦度</td><td>數值 1–5</td><td>ICC(2,1)</td><td>AI 與<b>所有</b>同學皆差 ≥ 2</td></tr>
+      </tbody>
+    </table>
+    <p class="note">本報告所有 Kappa/ICC 均以程式自實作計算(NumPy),與上列公式一致;原始碼:compare_ai_vs_students_v2.py。</p>
+  </section>
+
+  <section class="panel">
+    <h2>為什麼 Kappa / ICC 偏低?</h2>
+    <p class="legend">數值偏低<b>不等於</b>沒有一致性。主因有四,理解後請<b>搭配「實際一致率」一起判讀</b>(多落在 70–95%)。</p>
+    <div class="callout"><b>1. Kappa 悖論(高基準率):</b>當某類別幾乎一面倒——例如 AI 把能力標籤 <b>C 標在幾乎所有課</b>、或難易度分布不均——
+      隨機期望一致 p<sub>e</sub> 會很高,即使實際吻合率高,公式 (p<sub>o</sub>−p<sub>e</sub>)/(1−p<sub>e</sub>) 也會把 Kappa 壓到接近 0。
+      例:能力標籤 C 實際吻合率 69%,但 Kappa = 0.00。</div>
+    <div class="callout"><b>2. 樣本數小:</b>目前可比對僅 45 門、兩輪皆完成僅 19 門,估計本來就不穩;7/6 補齊後會更穩。</div>
+    <div class="callout"><b>3. 系統性觀點差異:</b>AI 偏給 C/D、同學偏給 A/B,是「穩定但相反」的標註傾向,會直接拉低 Kappa——這是<b>真實發現</b>,不是雜訊。</div>
+    <div class="callout"><b>4. ICC 是「絕對一致」:</b>只要 AI 的分數系統性地比同學高(或低),即使兩者<b>排序一致</b>,ICC 仍會偏低。
+      所以趣味度/推薦度的「差≤1 一致率」高達 ~82%,ICC 卻只有 0.2 上下。</div>
+  </section>
+
+  
+  <section class="panel">
+    <h2>AI 的評分尺規（可供同學標註參考）</h2>
+    <p class="legend">以下是 AI 分析每門課時實際依循的判準(摘自分析系統提示詞 SYSTEM_PROMPT)。
+      同學標註時可對齊此尺規,有助提升雙方一致性。</p>
+
+    <details class="rb"><summary>四大能力標籤 A／B／C／D</summary><div class="rbody">
+      <table>
+        <tr><td>A</td><td>運用 AI 學習</td></tr>
+        <tr><td>B</td><td>負責任使用 AI</td></tr>
+        <tr><td>C</td><td>運用 AI 解決問題</td></tr>
+        <tr><td>D</td><td>AI 無法取代的能力</td></tr>
+      </table>
+      <p>可複選;依課程實際內容對應。細項代碼共 11 個(下一區)。</p>
+    </div></details>
+
+    <details class="rb"><summary>11 個細項代碼（必須有／不算）</summary><div class="rbody">
+      <table>
+        <tr><td>A-1-IV-1</td><td>理解 AI 工具以提升專業學習成效。<b>必須有</b>教如何依領域需求理解原理、評估選用工具;<b>不算</b>只提到工具名稱。</td></tr>
+        <tr><td>A-2-IV-1</td><td>建立 AI 賦能自主/終身學習。<b>必須有</b>後設認知/批判思維融入自學、掌握趨勢;<b>不算</b>泛說「AI 很重要」。</td></tr>
+        <tr><td>B-1-IV-1</td><td>專業領域 AI 倫理與法規素養。<b>必須有</b>具體談智財/個資/使用規範;<b>不算</b>只說「要負責任使用」。</td></tr>
+        <tr><td>B-2-IV-1</td><td>AI 資安與風險意識。<b>必須有</b>分析資安/偏見/誤判風險或教查證辨識假訊息;<b>不算</b>只說「AI 不是萬能」。</td></tr>
+        <tr><td>B-3-IV-1</td><td>價值判斷與當責能力。<b>必須有</b>分析 AI 對社會影響並強調人類負責;<b>不算</b>泛提「AI 改變世界」。</td></tr>
+        <tr><td>C-1-IV-1</td><td>運用 AI 分析與解決問題。<b>必須有</b>完整「分析→判讀驗證→解方」流程;<b>不算</b>只介紹演算法原理。</td></tr>
+        <tr><td>C-2-IV-1</td><td>強化邏輯思維及跨領域整合。<b>必須有</b>講解模型運作/限制並判斷適用角色;<b>不算</b>只列演算法名稱。</td></tr>
+        <tr><td>C-3-IV-1</td><td>人機協作策劃與流程優化。<b>必須有</b>教如何在工作流程整合 AI、優化、回饋錯誤;<b>不算</b>只說「AI 能幫工作」。</td></tr>
+        <tr><td>D-1-IV-1</td><td>善用 AI 提升判斷與決策力。<b>必須有</b>強調人為決策主體、承擔責任;<b>不算</b>只說「AI 無法取代人」。</td></tr>
+        <tr><td>D-2-IV-1</td><td>AI 協作中的同理心與職場互動。<b>必須有</b>專門談同理/溝通/人際;<b>不算</b>一兩句帶過。</td></tr>
+        <tr><td>D-3-IV-1</td><td>真實世界洞察與創意整合。<b>必須有</b>強調觀察真實問題、創意整合多元觀點;<b>不算</b>只說「AI 需要創意」。</td></tr>
+      </table>
+    </div></details>
+
+    <details class="rb"><summary>難易度 與 建議修課對象</summary><div class="rbody">
+      <p><b>難易度（老師說的優先）:</b>「不需程式基礎/減少數學論證」→ <b>基礎</b>;「需先修 Python/截圖大量程式碼」→ <b>進階</b>。
+        注意:截圖出現數學公式 ≠ 進階。</p>
+      <p><b>建議修課對象:</b>通識素養型(無技術背景、想懂概念)、跨域應用型(非資訊科系、想應用於自身領域)、技術實作型(需動手寫程式)。</p>
+    </div></details>
+
+    <details class="rb"><summary>五大面向評分 1–5 錨點</summary><div class="rbody">
+      <p class="legend">原則:必須拉開差距、用完整 1–5 級距;5 分=同類最頂尖,3 分=普通基本水準。結構清晰度/應用廣度<b>預設 3 分</b>,有明確證據才給 4–5。</p>
+      <p><b>趣味度(呈現生動度):</b>5 真人出鏡＋互動/動畫＋大量案例｜4 真人/透明黑板＋豐富圖表｜3 投影片＋語音有基本圖表｜2 純文字、少舉例｜1 畫面幾乎不變、單調。</p>
+      <p><b>內容深度(理論嚴謹度):</b>5 深入數學推導達研究所水準｜4 完整講解演算法原理｜3 概念與運作邏輯、少量公式｜2 僅概念科普｜1 蜻蜓點水。</p>
+      <p><b>實作程度(動手比重):</b>5 完整程式專案跟著做｜4 程式示範與操作演練｜3 片段程式碼、未完整｜2 僅提及工具｜1 純理論無實作。</p>
+      <p><b>結構清晰度(組織講解):</b>5 章節嚴謹循序漸進｜4 結構清楚流暢｜3 大致有條理偶跳躍｜2 組織鬆散｜1 雜亂無章。</p>
+      <p><b>應用廣度(跨域/實務):</b>5 大量真實產業/跨域案例｜4 數個明確應用情境｜3 少數應用舉例｜2 偶爾提及｜1 純技術無連結。</p>
+    </div></details>
+
+    <details class="rb"><summary>推薦度 1–5（綜合)</summary><div class="rbody">
+      <p>5 理論實作並重、呈現佳、學完可上手｜4 某面向突出但有明顯短板｜3 普通入門符合基本水準(多數課程)｜2 受眾極窄/過時/深度實作皆不足｜1 嚴重品質問題。</p>
+    </div></details>
+
+    <details class="rb"><summary>課程節奏 三步驟判斷（精煉流暢／需開倍速／拖泥帶水)</summary><div class="rbody">
+      <p><b>第一步 語速(中文):</b>&gt;260 字/分→精煉流暢(除非贅詞多);210–260 中速區間(需第二三步決定);150–210→需開倍速;&lt;150→拖泥帶水。</p>
+      <p><b>第二步 贅詞密度:</b>每千字 &gt;10 次「那個/就是說/嗯/啊」等→降一級。</p>
+      <p><b>第三步 截圖變化(中速區間決定性):</b>畫面變化大、資訊密度高→精煉流暢;多相似畫面、長停同頁、資訊稀疏→需開倍速。</p>
+      <p class="legend">英文課語速異常(&gt;500 字/分)時直接看逐字稿密度:連貫密集→精煉流暢、稀疏重複→需開倍速。</p>
+    </div></details>
+  </section>
+
   <section class="panel">
     <h2>指標明細</h2>
     <table class="mt">
@@ -107,149 +258,210 @@ table.mt td{padding:9px 10px;border-bottom:1px solid #f0f0f2;}
     </table>
   </section>
 
+  
+  <section class="panel">
+    <h2>影片分區 Zone A／B／C　<span style="font-size:14px;color:#6e6e73;font-weight:400;">(7/6 完整資料後定案,目前為預覽)</span></h2>
+    <div class="zone-cards">
+      <div class="zcard A"><div class="zt" style="color:#1a7f3c">Zone A · 優選</div><div class="zn-n" style="color:#1a7f3c">7</div>
+        <div class="zd">一致性高 <b>且</b> 評價佳(自動採認且推薦均值 ≥ 3.5)。<br>推薦課程與組建模組<b>首選</b>。</div></div>
+      <div class="zcard B"><div class="zt" style="color:#5a6473">Zone B · 待議</div><div class="zn-n" style="color:#5a6473">30</div>
+        <div class="zd">一致性低(AI 與同學有實質分歧,需裁決)。<br>Zone A 不足時來此撈,<b>需與同學討論或 AI 進一步深入分析</b>。</div></div>
+      <div class="zcard C"><div class="zt" style="color:#b3261e">Zone C · 較弱</div><div class="zn-n" style="color:#b3261e">8</div>
+        <div class="zd">一致性高 <b>但</b> 評價偏低(自動採認但推薦均值 &lt; 3.5)。<br>AI 與同學<b>一致認為較弱</b>,組模組時不優先。</div></div>
+    </div>
+    <p class="note">「優劣」以推薦度均值(AI＋同學各輪)判定,門檻 3.5(1–5 量表中點偏上)。
+      Zone B 多因目前資料未補齊;7/6 第二輪填完、分歧釐清後,部分會移入 A 或 C。</p>
+  </section>
+
   <section class="panel">
     <h2>課程層級結果　<span style="font-size:14px;color:#6e6e73;font-weight:400;">（45 門 · 待裁決優先）</span></h2>
     <div class="ovt-wrap">
     <table class="ovt">
-      <thead><tr><th>#</th><th>編號</th><th>課程名稱</th><th>開課單位</th><th>同學</th><th>狀態</th><th>待裁決欄位</th></tr></thead>
+      <thead><tr><th>#</th><th>編號</th><th>課程名稱</th><th>開課單位</th><th>同學</th><th>推薦</th><th>Zone</th><th>狀態</th><th>待裁決欄位</th></tr></thead>
       <tbody><tr>
       <td class="num">1</td><td class="cidc">10000385</td>
       <td>AIoT技術與應用</td><td>東海大學</td>
-      <td class="mid">兩輪</td><td><span class="bd warn">⚠ 3 項待裁決</span></td><td class="flds">推薦度、能力標籤、趣味度</td></tr><tr>
+      <td class="mid">兩輪</td><td class="mid">4.3</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 3 項待裁決</span></td><td class="flds">推薦度、能力標籤、趣味度</td></tr><tr>
       <td class="num">2</td><td class="cidc">10002274</td>
       <td>色彩科學暨深度學習型電腦視覺實現</td><td>世新大學</td>
-      <td class="mid">1 輪</td><td><span class="bd warn">⚠ 3 項待裁決</span></td><td class="flds">推薦度、課程節奏、趣味度</td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">2.0</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 3 項待裁決</span></td><td class="flds">推薦度、課程節奏、趣味度</td></tr><tr>
       <td class="num">3</td><td class="cidc">10002642</td>
       <td>學習分析工具實務應用</td><td>國立臺灣師範大學</td>
-      <td class="mid">1 輪</td><td><span class="bd warn">⚠ 3 項待裁決</span></td><td class="flds">推薦度、能力標籤、難易度</td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">3.0</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 3 項待裁決</span></td><td class="flds">推薦度、能力標籤、難易度</td></tr><tr>
       <td class="num">4</td><td class="cidc">10003162</td>
       <td>Artificial Intelligence in Bioinformatics</td><td>臺北醫學大學</td>
-      <td class="mid">1 輪</td><td><span class="bd warn">⚠ 3 項待裁決</span></td><td class="flds">能力標籤、課程節奏、趣味度</td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">2.5</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 3 項待裁決</span></td><td class="flds">能力標籤、課程節奏、趣味度</td></tr><tr>
       <td class="num">5</td><td class="cidc">10001505</td>
       <td>和AI做朋友：從0開始學AI</td><td>教育部AI人才培育計畫-中小學推廣教育計畫</td>
-      <td class="mid">兩輪</td><td><span class="bd warn">⚠ 2 項待裁決</span></td><td class="flds">推薦度、能力標籤</td></tr><tr>
+      <td class="mid">兩輪</td><td class="mid">4.3</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 2 項待裁決</span></td><td class="flds">推薦度、能力標籤</td></tr><tr>
       <td class="num">6</td><td class="cidc">10002037</td>
       <td>不動產金融與投資的人工智慧應用</td><td>國立政治大學</td>
-      <td class="mid">兩輪</td><td><span class="bd warn">⚠ 2 項待裁決</span></td><td class="flds">推薦度、能力標籤</td></tr><tr>
+      <td class="mid">兩輪</td><td class="mid">4.0</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 2 項待裁決</span></td><td class="flds">推薦度、能力標籤</td></tr><tr>
       <td class="num">7</td><td class="cidc">10002528</td>
       <td>機器學習對教育資料的區辨特徵與趨向分析（10002528）</td><td>國立臺東大學</td>
-      <td class="mid">兩輪</td><td><span class="bd warn">⚠ 2 項待裁決</span></td><td class="flds">趣味度、難易度</td></tr><tr>
+      <td class="mid">兩輪</td><td class="mid">3.5</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 2 項待裁決</span></td><td class="flds">趣味度、難易度</td></tr><tr>
       <td class="num">8</td><td class="cidc">10002529</td>
       <td>Python程式設計與視覺化數據分析</td><td>國立臺東大學</td>
-      <td class="mid">1 輪</td><td><span class="bd warn">⚠ 2 項待裁決</span></td><td class="flds">能力標籤、難易度</td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">3.0</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 2 項待裁決</span></td><td class="flds">能力標籤、難易度</td></tr><tr>
       <td class="num">9</td><td class="cidc">10002643</td>
       <td>資料科學在教育上的應用</td><td>國立臺灣師範大學</td>
-      <td class="mid">1 輪</td><td><span class="bd warn">⚠ 2 項待裁決</span></td><td class="flds">能力標籤、課程節奏</td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">3.0</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 2 項待裁決</span></td><td class="flds">能力標籤、課程節奏</td></tr><tr>
       <td class="num">10</td><td class="cidc">10002659</td>
       <td>生成式AI在教育上的應用課程</td><td>亞洲大學</td>
-      <td class="mid">1 輪</td><td><span class="bd warn">⚠ 2 項待裁決</span></td><td class="flds">推薦度、難易度</td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">4.0</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 2 項待裁決</span></td><td class="flds">推薦度、難易度</td></tr><tr>
       <td class="num">11</td><td class="cidc">10000288</td>
       <td>深度學習 Deep Learning</td><td>國立中正大學</td>
-      <td class="mid">1 輪</td><td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">難易度</td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">3.5</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">難易度</td></tr><tr>
       <td class="num">12</td><td class="cidc">10000384</td>
       <td>人工智慧與深度學習</td><td>東海大學</td>
-      <td class="mid">1 輪</td><td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">推薦度</td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">4.0</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">推薦度</td></tr><tr>
       <td class="num">13</td><td class="cidc">10000421</td>
       <td>商業人工智慧導論</td><td>國立政治大學</td>
-      <td class="mid">1 輪</td><td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">課程節奏</td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">3.5</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">課程節奏</td></tr><tr>
       <td class="num">14</td><td class="cidc">10000466</td>
       <td>當機器人來上班—未來職場的AI必修課</td><td>國立雲林科技大學</td>
-      <td class="mid">兩輪</td><td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
+      <td class="mid">兩輪</td><td class="mid">3.7</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
       <td class="num">15</td><td class="cidc">10000540</td>
       <td>人工智慧導論</td><td>中原大學</td>
-      <td class="mid">1 輪</td><td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">3.0</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
       <td class="num">16</td><td class="cidc">10000592</td>
       <td>人工智慧與程式設計基礎系列-人工智慧醫學影像處理</td><td>臺北醫學大學</td>
-      <td class="mid">—</td><td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
+      <td class="mid">—</td><td class="mid">3.0</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
       <td class="num">17</td><td class="cidc">10000593</td>
       <td>人工智慧生物資訊分析方法</td><td>臺北醫學大學</td>
-      <td class="mid">兩輪</td><td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">難易度</td></tr><tr>
+      <td class="mid">兩輪</td><td class="mid">2.3</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">難易度</td></tr><tr>
       <td class="num">18</td><td class="cidc">10001601</td>
       <td>AI智慧創新與應用</td><td>淡江大學</td>
-      <td class="mid">兩輪</td><td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
+      <td class="mid">兩輪</td><td class="mid">4.0</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
       <td class="num">19</td><td class="cidc">10001682</td>
       <td>人工智慧倫理、法律與政策</td><td>國立清華大學</td>
-      <td class="mid">兩輪</td><td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">難易度</td></tr><tr>
+      <td class="mid">兩輪</td><td class="mid">3.3</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">難易度</td></tr><tr>
       <td class="num">20</td><td class="cidc">10002154</td>
       <td>AI精準決策與人類行為干預</td><td>國立雲林科技大學</td>
-      <td class="mid">1 輪</td><td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">3.0</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
       <td class="num">21</td><td class="cidc">10002206</td>
       <td>深度學習與工程應用</td><td>國立成功大學</td>
-      <td class="mid">兩輪</td><td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
+      <td class="mid">兩輪</td><td class="mid">4.0</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
       <td class="num">22</td><td class="cidc">10002244</td>
       <td>金融科技：指尖上的金融，AI來幫你</td><td>義守大學</td>
-      <td class="mid">兩輪</td><td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
+      <td class="mid">兩輪</td><td class="mid">3.0</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
       <td class="num">23</td><td class="cidc">10002251</td>
       <td>人工智慧在教育上的應用（10002251）</td><td>國立臺北教育大學</td>
-      <td class="mid">1 輪</td><td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">3.5</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
       <td class="num">24</td><td class="cidc">10002617</td>
       <td>資料科學與教育資料探勘</td><td>東海大學</td>
-      <td class="mid">1 輪</td><td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">難易度</td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">3.5</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">難易度</td></tr><tr>
       <td class="num">25</td><td class="cidc">10002641</td>
       <td>生成式AI增能攻略</td><td>國立臺中科技大學</td>
-      <td class="mid">1 輪</td><td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">3.5</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
       <td class="num">26</td><td class="cidc">10002644</td>
       <td>教育資料探勘（10002644）</td><td>國立彰化師範大學</td>
-      <td class="mid">1 輪</td><td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">難易度</td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">3.0</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">難易度</td></tr><tr>
       <td class="num">27</td><td class="cidc">10002768</td>
       <td>AI導入磨課師製作指南</td><td>國立宜蘭大學</td>
-      <td class="mid">1 輪</td><td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">趣味度</td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">3.5</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">趣味度</td></tr><tr>
       <td class="num">28</td><td class="cidc">10002926</td>
       <td>生成式AI</td><td>淡江大學</td>
-      <td class="mid">兩輪</td><td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
+      <td class="mid">兩輪</td><td class="mid">2.7</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
       <td class="num">29</td><td class="cidc">10003148</td>
       <td>[資通安全]生成式AI對數位素養的挑戰</td><td>國立陽明交通大學</td>
-      <td class="mid">兩輪</td><td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
+      <td class="mid">兩輪</td><td class="mid">3.7</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
       <td class="num">30</td><td class="cidc">10003150</td>
       <td>當教育大數據遇見AI(2)</td><td>逢甲大學</td>
-      <td class="mid">1 輪</td><td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">2.5</td><td><span class="zn znB">B·待議</span></td>
+      <td><span class="bd warn">⚠ 1 項待裁決</span></td><td class="flds">能力標籤</td></tr><tr>
       <td class="num">31</td><td class="cidc">10000022</td>
       <td>機器學習與物聯網資料分析</td><td>國立臺灣科技大學</td>
-      <td class="mid">1 輪</td><td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">2.5</td><td><span class="zn znC">C·較弱</span></td>
+      <td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
       <td class="num">32</td><td class="cidc">10000034</td>
       <td>邁向自動駕駛之AI物件偵測技術</td><td>國立陽明交通大學</td>
-      <td class="mid">兩輪</td><td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
+      <td class="mid">兩輪</td><td class="mid">4.0</td><td><span class="zn znA">A·優選</span></td>
+      <td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
       <td class="num">33</td><td class="cidc">10000459</td>
       <td>深度模糊計算及應用</td><td>國立中正大學</td>
-      <td class="mid">1 輪</td><td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">3.0</td><td><span class="zn znC">C·較弱</span></td>
+      <td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
       <td class="num">34</td><td class="cidc">10000532</td>
       <td>機器學習在資訊安全的運用</td><td>國立空中大學</td>
-      <td class="mid">兩輪</td><td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
+      <td class="mid">兩輪</td><td class="mid">3.7</td><td><span class="zn znA">A·優選</span></td>
+      <td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
       <td class="num">35</td><td class="cidc">10000552</td>
       <td>機器學習基礎理論與實作</td><td>逢甲大學</td>
-      <td class="mid">兩輪</td><td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
+      <td class="mid">兩輪</td><td class="mid">3.7</td><td><span class="zn znA">A·優選</span></td>
+      <td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
       <td class="num">36</td><td class="cidc">10000587</td>
       <td>人工智慧應用於健康領域: 機會與挑戰</td><td>臺北醫學大學</td>
-      <td class="mid">兩輪</td><td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
+      <td class="mid">兩輪</td><td class="mid">3.3</td><td><span class="zn znC">C·較弱</span></td>
+      <td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
       <td class="num">37</td><td class="cidc">10001580</td>
       <td>AI素養與思維</td><td>淡江大學</td>
-      <td class="mid">兩輪</td><td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
+      <td class="mid">兩輪</td><td class="mid">3.0</td><td><span class="zn znC">C·較弱</span></td>
+      <td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
       <td class="num">38</td><td class="cidc">10001841</td>
       <td>深度學習實務應用</td><td>國立臺中教育大學</td>
-      <td class="mid">兩輪</td><td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
+      <td class="mid">兩輪</td><td class="mid">4.0</td><td><span class="zn znA">A·優選</span></td>
+      <td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
       <td class="num">39</td><td class="cidc">10002194</td>
       <td>深度學習網路核心議題之論證</td><td>國立嘉義大學</td>
-      <td class="mid">1 輪</td><td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">2.5</td><td><span class="zn znC">C·較弱</span></td>
+      <td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
       <td class="num">40</td><td class="cidc">10002656</td>
       <td>解密生成式AI的核心：從注意力機制到Transformer架構</td><td>國立臺中教育大學</td>
-      <td class="mid">兩輪</td><td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
+      <td class="mid">兩輪</td><td class="mid">3.7</td><td><span class="zn znA">A·優選</span></td>
+      <td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
       <td class="num">41</td><td class="cidc">10002674</td>
       <td>磨課師三分鐘系列課程-AI篇</td><td>國立宜蘭大學</td>
-      <td class="mid">1 輪</td><td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">2.5</td><td><span class="zn znC">C·較弱</span></td>
+      <td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
       <td class="num">42</td><td class="cidc">10002675</td>
       <td>機器學習實作</td><td>國立中興大學</td>
-      <td class="mid">1 輪</td><td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">4.0</td><td><span class="zn znA">A·優選</span></td>
+      <td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
       <td class="num">43</td><td class="cidc">10002767</td>
       <td>運用 MOOCs、AI 與設計思維打造數位微課程</td><td>國立宜蘭大學</td>
-      <td class="mid">1 輪</td><td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">3.5</td><td><span class="zn znA">A·優選</span></td>
+      <td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
       <td class="num">44</td><td class="cidc">10002913</td>
       <td>生成式AI工具與AI繪圖</td><td>東海大學</td>
-      <td class="mid">1 輪</td><td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
+      <td class="mid">1 輪</td><td class="mid">2.5</td><td><span class="zn znC">C·較弱</span></td>
+      <td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr><tr>
       <td class="num">45</td><td class="cidc">10003100</td>
       <td>機器學習對教育資料的區辨特徵與趨向分析（10003100）</td><td>國立臺東大學</td>
-      <td class="mid">1 輪</td><td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr></tbody>
+      <td class="mid">1 輪</td><td class="mid">3.0</td><td><span class="zn znC">C·較弱</span></td>
+      <td><span class="bd ok">✓ 一致</span></td><td class="flds"></td></tr></tbody>
     </table>
     </div>
+    <p class="note">「推薦」為 AI 與同學推薦度均值;Zone 分區見上一節。</p>
   </section>
 
 </div>
