@@ -129,8 +129,8 @@ details.rb .rbody td:first-child{white-space:nowrap;font-weight:600;color:#1F386
   
   <section class="panel">
     <h2>計算方式與公式</h2>
-    <p class="note">三個核心指標:類別欄位用 <b>Cohen's Kappa</b>、序位欄位(課程節奏)用 <b>加權 Kappa</b>、
-      數值欄位用 <b>ICC(2,1)</b>;另以 <b>實際一致率</b> 對照判讀。以下為定義與公式。</p>
+    <p class="note">核心指標:類別欄位用 <b>Cohen's Kappa</b> 並以 <b>Gwet's AC1</b> 為主要判讀(解偏態)、
+      序位欄位(課程節奏)用 <b>加權 Kappa</b>、數值欄位用 <b>ICC(2,1)</b>;另以 <b>實際一致率</b> 對照判讀。以下為定義與公式。</p>
 
     <h3>① Cohen's Kappa（類別一致性）</h3>
     <p class="legend">衡量兩位評分者的一致性,並<b>扣除「純靠運氣猜中」的部分</b>。範圍 −1~1,越高越一致。</p>
@@ -141,7 +141,20 @@ details.rb .rbody td:first-child{white-space:nowrap;font-weight:600;color:#1F386
       直覺:若某類別本來就佔絕大多數,光靠亂猜也會常常「猜中」,Kappa 會把這部分扣掉。
     </p>
 
-    <h3>② 加權 Kappa（課程節奏 — 序位三級）</h3>
+    <h3>② Gwet's AC1（解 Kappa 悖論 — 類別欄位主要採用此值）</h3>
+    <p class="legend">和 Kappa 一樣會扣掉「運氣猜中」,但<b>「運氣」的算法不同</b>。Kappa 用「邊際相乘」估運氣,
+      在<b>某類別佔多數(偏態)</b>時會過度膨脹,把 Kappa 壓到接近 0(這就是 Kappa 悖論);
+      Gwet's AC1 改用 <code>π(1−π)</code> 估運氣,偏態時不會爆高,因此<b>不會發生這個悖論</b>。
+      當實際一致率高、分布卻偏態時,AC1 會正確地維持高分。國際上被推薦於這種情況取代 Kappa。範圍 −1~1。</p>
+    <div class="formula">AC1 = <span class="frac"><span class="nu">p<sub>a</sub> − p<sub>e</sub></span><span class="de">1 − p<sub>e</sub></span></span>　,　其中　p<sub>e</sub> = <span class="frac"><span class="nu">1</span><span class="de">q − 1</span></span> · Σ<sub>k</sub> π<sub>k</sub>(1 − π<sub>k</sub>)</div>
+    <p class="legend">
+      <code>p<sub>a</sub></code> = 觀察一致比例(同 Kappa 的 p<sub>o</sub>)。<br>
+      <code>π<sub>k</sub></code> = 類別 k 在兩位評分者的<b>平均</b>出現比例;<code>q</code> = 類別數(二元時 q=2)。<br>
+      <b>實例:</b>能力標籤 C 兩邊都幾乎全勾 → Kappa 的 p<sub>e</sub>≈0.9,使 Kappa=0.00;
+      但 AC1 的 p<sub>e</sub> 低很多,算出 <b>AC1=0.68</b>(對應實際一致率 76%)——這才反映真實的一致程度。
+    </p>
+
+    <h3>③ 加權 Kappa（課程節奏 — 序位三級）</h3>
     <p class="legend">課程節奏是<b>有順序</b>的三級:精煉流暢 → 需開倍速 → 拖泥帶水。
       相鄰一級(如 流暢↔需開倍速)只算「輕微不同」,差兩級(流暢↔拖泥帶水)才算「嚴重不同」,故用加權。</p>
     <div class="formula">κ<sub>w</sub> = 1 − <span class="frac"><span class="nu">Σ w<sub>ij</sub> · O<sub>ij</sub></span><span class="de">Σ w<sub>ij</sub> · E<sub>ij</sub></span></span></div>
@@ -150,7 +163,7 @@ details.rb .rbody td:first-child{white-space:nowrap;font-weight:600;color:#1F386
       <code>O<sub>ij</sub></code> = 實際落在 (i,j) 的比例;<code>E<sub>ij</sub></code> = 隨機期望比例(兩邊邊際相乘)。
     </p>
 
-    <h3>③ ICC(2,1)（數值一致性 — 趣味度／推薦度）</h3>
+    <h3>④ ICC(2,1)（數值一致性 — 趣味度／推薦度）</h3>
     <p class="legend">組內相關係數,<b>雙向隨機、單一評分者、絕對一致</b>版本。衡量 1~5 分的數值評分一致性,範圍 0~1。</p>
     <div class="formula">ICC = <span class="frac"><span class="nu">MS<sub>R</sub> − MS<sub>E</sub></span><span class="de">MS<sub>R</sub> + (k−1)MS<sub>E</sub> + (k∕n)(MS<sub>C</sub> − MS<sub>E</sub>)</span></span></div>
     <p class="legend">
@@ -159,7 +172,7 @@ details.rb .rbody td:first-child{white-space:nowrap;font-weight:600;color:#1F386
       重點:這是「<b>絕對一致</b>」——若 AI 給分系統性地比同學高/低(即使排序一樣),ICC 仍會下降。
     </p>
 
-    <h3>④ 實際一致率（直觀對照)</h3>
+    <h3>⑤ 實際一致率（直觀對照)</h3>
     <p class="legend">不扣運氣的「直接吻合比例」,跟 Kappa/ICC 並列看,避免被偏態壓低的 Kappa 誤導。</p>
     <table class="mt">
       <thead><tr><th>欄位類型</th><th>一致率定義</th></tr></thead>
