@@ -113,11 +113,12 @@ details.rb .rbody td:first-child{white-space:nowrap;font-weight:600;color:#1F386
 }
 @media(max-width:430px){.hero h1{font-size:24px;} .stat .stv{font-size:28px;}}
 .navbar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:saturate(180%) blur(12px);
-  border-bottom:1px solid #e3e3e6;padding:10px 20px;white-space:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  border-bottom:1px solid #e3e3e6;}
+.navbar-inner{max-width:1060px;margin:0 auto;padding:10px 20px;white-space:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .navbar a{display:inline-block;color:#0071e3;text-decoration:none;font-size:13.5px;font-weight:600;
   padding:6px 13px;margin-right:6px;border-radius:20px;background:#f0f4fa;}
 .navbar a:hover{background:#e2ecfa;}
-.navbar::-webkit-scrollbar{height:0;}
+.navbar-inner::-webkit-scrollbar{height:0;}
 .footer-links{text-align:center;font-size:13px;color:#6e6e73;padding:18px 12px 4px;line-height:2;}
 .footer-links a{color:#0071e3;text-decoration:none;font-weight:600;} .footer-links a:hover{text-decoration:underline;}
 .rate-chip-row{display:flex;gap:10px;align-items:flex-start;margin:10px 0;}
@@ -133,7 +134,7 @@ details.rb .rbody td:first-child{white-space:nowrap;font-weight:600;color:#1F386
   <p class="sub">以實際一致率驗證 AI 自動標註與同學人工標註的一致性,門檻 70%。</p>
   <p class="meta">去識別化公開版 · 不含學生姓名與逐筆原始標註　·　產出日 2026-07-16</p>
 </div>
-<nav class="navbar"><a href="#overview">總覽</a><a href="#metrics-summary">一致性指標</a><a href="#zone-overview">Zone分區</a><a href="#findings">主要發現</a><a href="#rubric">評分尺規</a><a href="#metrics-detail">指標明細</a><a href="#course-table">課程列表</a></nav>
+<nav class="navbar"><div class="navbar-inner"><a href="#overview">總覽</a><a href="#metrics-summary">一致性指標</a><a href="#zone-overview">Zone分區</a><a href="#findings">主要發現</a><a href="#rubric">評分尺規</a><a href="#metrics-detail">指標明細</a><a href="#course-table">課程列表</a></div></nav>
 <div class="wrap">
 
   <section class="panel" id="overview">
