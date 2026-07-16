@@ -9,7 +9,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro TC","PingFang TC","Hel
 .hero .sub{margin:14px auto 0;max-width:700px;font-size:18px;color:#6e6e73;font-weight:400;}
 .hero .meta{margin-top:10px;font-size:13px;color:#86868b;}
 .wrap{max-width:1060px;margin:0 auto;padding:8px 20px 80px;}
-.panel{background:#fff;border-radius:20px;box-shadow:0 4px 24px rgba(0,0,0,.05);padding:30px 32px 34px;margin:18px 0 26px;}
+.panel{background:#fff;border-radius:20px;box-shadow:0 4px 24px rgba(0,0,0,.05);padding:30px 32px 34px;margin:18px 0 26px;scroll-margin-top:70px;}
 .panel h2{margin:0 0 20px;font-size:26px;font-weight:600;letter-spacing:-.01em;}
 .panel h3{font-size:17px;font-weight:600;margin:22px 0 10px;}
 .ov-stats{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px;}
@@ -28,6 +28,7 @@ table.mt td{padding:9px 10px;border-bottom:1px solid #f0f0f2;}
 .ovt{width:100%;border-collapse:collapse;font-size:14px;}
 .ovt th{color:#6e6e73;padding:10px 12px;text-align:left;font-weight:500;border-bottom:1px solid #e3e3e6;font-size:13px;white-space:nowrap;}
 .ovt td{padding:10px 12px;border-bottom:1px solid #f0f0f2;vertical-align:middle;}
+.ovt a{color:#0071e3;text-decoration:none;font-weight:500;} .ovt a:hover{text-decoration:underline;}
 .ovt tr:hover td{background:#f9f9fb;}
 .ovt .num{color:#a1a1a6;width:30px;} .ovt .cidc{color:#a1a1a6;font-size:12px;white-space:nowrap;}
 .ovt .flds{font-size:12.5px;color:#6e6e73;}
@@ -43,7 +44,8 @@ table.dt td.kwc2{text-align:left;white-space:normal;min-width:180px;color:#86868
 .kw{background:#eef2f8;color:#1F3864;border-radius:8px;padding:3px 10px;font-weight:600;}
 .kw sub{color:#0071e3;font-size:10px;margin-left:2px;}
 .cards{margin:0;}
-.ccard{background:#fff;border-radius:18px;box-shadow:0 4px 20px rgba(0,0,0,.05);margin-bottom:20px;overflow:hidden;}
+.ccard{background:#fff;border-radius:18px;box-shadow:0 4px 20px rgba(0,0,0,.05);margin-bottom:20px;overflow:hidden;scroll-margin-top:70px;}
+.ccard:target{box-shadow:0 0 0 3px #0071e3;}
 .ccard .ch{padding:18px 24px 14px;border-bottom:1px solid #f0f0f2;}
 .ccard .ch h3{display:inline;font-size:19px;font-weight:600;margin:0 8px 0 0;}
 .ccard .cid{font-size:12px;color:#a1a1a6;margin-right:8px;}
@@ -70,6 +72,7 @@ table.dt td.kwc2{text-align:left;white-space:normal;min-width:180px;color:#86868
 .zah{padding:12px 16px 8px;border-bottom:1px solid #eef2f8;background:#eafaf0;}
 .zarank{font-size:11px;font-weight:700;color:#1a7f3c;}
 .zah h3{font-size:15.5px;font-weight:600;margin:3px 0;} .zameta{font-size:12px;color:#6e6e73;}
+.zah h3 a{color:#1d1d1f;text-decoration:none;} .zah h3 a:hover{color:#0071e3;text-decoration:underline;}
 .zab{display:flex;gap:12px;padding:12px 16px 14px;}
 .zaleft{flex:1;min-width:0;} .zaright{width:150px;flex:none;text-align:center;} .zaright img{width:100%;max-width:150px;}
 .zarow{font-size:13px;margin:5px 0;line-height:1.5;} .zarow b{color:#1F3864;margin-right:4px;}
